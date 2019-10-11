@@ -1,0 +1,93 @@
+*/
+ Circuit:
+C Serial Clock Input
+D Serial Data Input Input
+Q Serial Data Output Output
+S Chip Select Input
+W Write Protect Input
+HOLD Hold Input //from SPI Memory's perspective
+under construction*/
+
+
+// the sensor communicates using SPI, so include the library:
+include <SPI.h>
+
+//Sensor's memory register addresses:
+const byte WREN = 0b00000110;      //
+const byte WRDI = 0b00000100;  //
+const byte READ = 0b00000011;   //
+const byte PP = 0b11111100;     // PP command
+const byte address = 0b00000010;   // address
+const byte data = 0b10101010; //data
+const byte write_sequence[5] = {PP, address, data};
+const byte read_sequence[4] = {READ, address};
+
+// pins used for the connection with the sensor
+// the other you need are controlled by the SPI library):
+const int clock = ;
+const int MOSI = ;
+const int MISO = ;
+const int SS = ;
+const int W = ; //always 1 maybe =\ >_< /=
+const int HOLD = ; //always 1 
+
+void setup() {
+    Serial.begin(9600);
+    
+  // start the SPI library:
+  SPI.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0));
+
+  // initalize the  pins
+  pinMode(MISO, INPUT);
+  pinMode(MOSI, OUTPUT);
+  pinMode(clock, OUTPUT); //
+  pinMode(SS, OUTPUT);
+  pinMode(W, OUTPUT);
+  pinMode(HOLD, OUTPUT);
+
+  digitalWrite(HOLD, high);
+  digitalWrite(W, high);
+  // give the sensor time to set up:
+  delay(100);
+}
+
+void loop() {
+    //write
+    writeFlash();
+    
+    //Read
+    out_data = readFlash();
+    
+    Serial.println(out_data);
+}
+
+//Read from or write to register from the SCP1000:
+writeFlash(){
+    //WREN sequence
+    digitalWrite(SS,low);
+    SPI.transfer(WREN);
+    digitalWrite(SS,high);
+    delay(10);
+    //
+    //data transmission begins
+    digitalWrite(SS,low);
+    SPI.transfer(write_sequence, 5);
+    digitalWrite(SS,high);
+    delay(100);
+    //
+    //WRDI sequence
+    digitalWrite(SS,low);
+    SPI.transfer(WRDI);
+    digitalWrite(SS,high);
+    delay(10);
+    //
+    
+}
+
+readFlash(byte address){
+    byte temp;
+    digitalWrite(SS,low);
+    temp = SPI.transfer(read_sequence, 4);
+    digitalWrite(SS,high);
+    return temp;
+}
