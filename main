@@ -1,3 +1,9 @@
+//Tasks remaining
+/*
+1. figure out the buffer data type in arduino which is to be SPI.transfer
+2. figure out the pin number
+*/
+
 */
  Circuit:
 C Serial Clock Input
@@ -35,7 +41,7 @@ void setup() {
     Serial.begin(9600);
     
   // start the SPI library:
-  SPI.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0));
+  SPI.beginTransaction(SPISettings(1000000, MSBFIRST, SPI_MODE0));  //1 Mhz
 
   // initalize the  pins
   pinMode(MISO, INPUT);
